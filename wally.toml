@@ -1,0 +1,12 @@
+[package]
+name = "dev/tycoon-framework"
+version = "0.1.0"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+
+[dependencies]
+Janitor = "howmanysmall/janitor@^1.17.0"
+
+[server-dependencies]
+ProfileStore="ddashdev/profilestore@1.0.4"
+
