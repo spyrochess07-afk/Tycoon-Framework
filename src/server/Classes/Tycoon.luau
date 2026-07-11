@@ -1,57 +1,62 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+--Dependencies
+local Janitor = require(ReplicatedStorage.Packages.Janitor)
+local DataManager = require(script.Parent.Parent.Data.DataManager)
+local Plot = require(script.Parent.Plot)
+local Types = require(ReplicatedStorage.Shared.Types)
 
+--Types
+type Janitor = Types.Janitor
+type Slot = Types.Slot
+type TycoonData = Types.TycoonData
+type TycoonClass = Types.TycoonClass
+type TycoonObject = Types.TycoonObject
 
+--
 
 local Tycoon = {} :: TycoonClass
 Tycoon.__index = Tycoon
 
-type TycoonData = {
-	Owner: Player?,
-	Money:number?,
-	Unlocked:{string}?,
-	__janitor:Janitor,
+Tycoon.Slots = {
+	[1] = { ["Available"] = true, ["Coordinates"] = Vector3.new() },
+	[2] = { ["Available"] = true, ["Coordinates"] = Vector3.new() },
 }
-
-type TycoonClass = {
-	__index: TycoonClass,
-	new: (player:Player) -> TycoonObject,
-    Destroy:(self:TycoonObject)->(),
-	Instantiate:(self:TycoonObject)->(),
-	
-}
-
-export type TycoonObject = TycoonData & typeof(Tycoon) -- Cyclic type dependency! Must modify
-
-
---Dependencies
-local DataManager=require(script.Parent.Parent.Data.DataManager)
-local Janitor=require(game:GetService("ReplicatedStorage").Packages.Janitor)
-type Janitor=typeof(Janitor.new())
---
-
 
 function Tycoon.new(player: Player): TycoonObject
-	
 	local self = setmetatable({} :: TycoonObject, Tycoon)
 
 	self.Owner = player
-	self.__janitor=Janitor.new()
-	self.Money=DataManager.GetMoney(player)
-	self.Unlocked=DataManager.GetUnlockedInstances(player)
+	self.__janitor = Janitor.new()
+	self.Money = DataManager.GetMoney(player)
+	self.Unlocked = DataManager.GetUnlockedInstances(player)
+	self.Slot = nil
+
+	if self:PickSlot() then
+		self.Plot = Plot.new(self)
+	end
+
 
 	return self
 end
 
+function Tycoon:PickSlot()
+	for _, slot in pairs(Tycoon.Slots) do
+		if slot.Available then
+			self.Slot = slot
+			slot.Available = false
 
-
-
-
-function Tycoon:Destroy()
-    self.Owner=nil
-	self.Money=nil
-	self.Unlocked=nil
-	
-	self.__janitor:Destroy()
+			return true
+		end
+	end
+	return false
 end
 
+function Tycoon:Destroy()
+	self.Owner = nil
+	self.Money = nil
+	self.Unlocked = nil
+
+	self.__janitor:Destroy()
+end
 
 return Tycoon
