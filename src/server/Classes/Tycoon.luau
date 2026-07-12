@@ -35,26 +35,38 @@ function Tycoon.new(player: Player): TycoonObject
 		self.Plot = Plot.new(self)
 	end
 
-
+	print("Tycoon object created")
 	return self
 end
+
+
 
 function Tycoon:PickSlot()
 	for _, slot in pairs(Tycoon.Slots) do
 		if slot.Available then
 			self.Slot = slot
-			slot.Available = false
-
+			slot.Available = false -- On exit I have to find a way to make the slot available again
+			print("Slot picked")
 			return true
 		end
 	end
 	return false
 end
 
+
+
+
+
+
+
+
 function Tycoon:Destroy()
 	self.Owner = nil
 	self.Money = nil
 	self.Unlocked = nil
+	self.Slot=nil
+	
+	self.Plot:Destroy()
 
 	self.__janitor:Destroy()
 end

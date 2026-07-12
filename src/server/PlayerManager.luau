@@ -29,7 +29,7 @@ PlayerManager.Removed = function(player: Player)
 	
 	local tycoon = activeTycoons[player]
 	if tycoon then
-		tycoon:destroy()
+		tycoon:Destroy()
         activeTycoons[player]=nil
 	end
 

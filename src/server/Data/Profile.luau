@@ -1,16 +1,14 @@
 local Players = game:GetService("Players")
 local ProfileStore = require(game.ServerScriptService.ServerPackages.ProfileStore)
+local Types=require(game:GetService("ReplicatedStorage").Shared.Types)
 
-type Template = {
-	Money: number,
-	Unlocked: { [string]: { [string]:boolean } },
-}
+type Template=Types.Template
 
 local TEMPLATE: Template = {
 	Money = 0,
 	Unlocked = {
-		["Generators"] = {}  ,
-		["Buttons"] = {},
+		["Generators"] = {["First"]=true}  ,
+		["Buttons"] = {["Hi"]=true},
 	},
 }
 
