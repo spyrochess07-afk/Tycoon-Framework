@@ -1,5 +1,6 @@
 -- Dependencies
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DataManager = require(script.Parent.Parent.Data.DataManager)
 local ServerStorage = game:GetService("ServerStorage")
 local Janitor = require(ReplicatedStorage.Packages.Janitor)
 local Types = require(ReplicatedStorage.Shared.Types)
@@ -7,61 +8,50 @@ local Types = require(ReplicatedStorage.Shared.Types)
 local PlotAssets = ServerStorage:FindFirstChild("PlotAssets")
 
 -- Types
-type Janitor = Types.Janitor
-type TycoonObject = Types.TycoonObject
-type PlotData = Types.PlotData
-type PlotObject = Types.PlotObject
-local Plot = {} :: PlotObject
+type PlotClass = Types.PlotClass
+type Plot = Types.Plot
 
+local Plot = {} :: PlotClass
 
 Plot.__index = Plot
 
-function Plot.new(tycoonInstance: TycoonObject): PlotObject
-	local self = setmetatable({} :: PlotObject, Plot)
-	
-	self.Coordinates = tycoonInstance.Slot.Coordinates
-	self.Owner = tycoonInstance.Owner
-	self.UnlockedInstances = tycoonInstance.Unlocked
+function Plot.new(player: Player)
+	local self = setmetatable({} :: Plot, Plot)
+
+	self.Owner = player
 	self.__janitor = Janitor.new()
-	self:Init()
-	print("Plot object created")
+
 	return self
 end
 
 function Plot:Init()
-	print("Initializing!")
-	
-	for categoryName, items in pairs(self.UnlockedInstances) do
-		local categoryFolder = PlotAssets:FindFirstChild(categoryName)
+	self.Unlocked = DataManager.GetUnlockedInstances(self.Owner)
 
-		if not categoryFolder then
-			warn("No category folder found for: " .. tostring(categoryName))
-			continue
-		end
+	for categoryName, itemList in self.Unlocked do
+		local category = PlotAssets:FindFirstChild(categoryName)
 
-		for item, owned in items do
-			if not owned then continue end 
-			local asset = categoryFolder:FindFirstChild(item)
-			if asset then
+		if category then
+			for itemName, owned in itemList do
+				if not owned then
+					return
+				end
+				local asset = category:FindFirstChild(itemName)
+				if not asset then
+					continue
+				end
+
 				local clonedAsset = asset:Clone()
-				clonedAsset.Parent=workspace
-				-- Parent the asset
-				self.__janitor:Add(clonedAsset)
-			else
-				warn("Item " .. tostring(item) .. " is not found in the category folder")
+				clonedAsset.Parent=workspace -- Temporary 
+				-- Here add the parent logic more extensively 
+
+				self.__janitor:Add(clonedAsset, "Destroy")
 			end
 		end
 	end
 end
 
-
-
-
-function Plot:Destroy() 
-
-	self.Coordinates=nil
-	self.Owner=nil
-	self.UnlockedInstances=nil
+function Plot:Destroy()
+	print("Destroying all plot data for " .. self.Owner.Name)
 	self.__janitor:Destroy()
 end
 
