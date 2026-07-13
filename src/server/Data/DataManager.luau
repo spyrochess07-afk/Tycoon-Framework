@@ -15,7 +15,7 @@ DataManager.LoadProfile = function(player: Player)
 		attempts += 1
 		task.wait(INIT_TIME * (2 ^ (attempts - 1))) -- 0.5 , 1 , 2 , 4, 8
 	end
-	print("Profile fetched for" .. player.Name)
+	print("Profile fetched for " .. player.Name)
 
 	return true 
 end

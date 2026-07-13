@@ -30,18 +30,21 @@ export type TycoonClass = {
 }
 
 export type PlotClass = {
-
+	Plots:{[number]:{Number:number,Coordinates:Vector3,Available:boolean}},
 	__index: PlotClass,
 	new: (Player) -> PlotClass,
 	Destroy:(Plot)->(),
-	Init:(Plot)->()
-	
+	Init:(Plot)->(),
+	AddAsset:(Plot,asset:{Name:string,Attribute:string})->(),
+	PickPlot:(Plot)->()
 }
 
 export type PlotData={
 	__janitor:Janitor,
 	Owner:Player,
-	Unlocked:Unlocked
+	Unlocked:Unlocked,
+	Plot:{Number:number,Coordinates:Vector3,Available:boolean}
+
 }
 
 export type Plot= PlotClass & PlotData
