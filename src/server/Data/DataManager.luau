@@ -17,7 +17,7 @@ DataManager.LoadProfile = function(player: Player)
 	end
 	print("Profile fetched for " .. player.Name)
 
-	return true 
+	return true
 end
 
 DataManager.GetMoney = function(player: Player): number?
@@ -36,25 +36,40 @@ DataManager.GetUnlockedInstances = function(player: Player)
 	return profile.Data.Unlocked
 end
 
-DataManager.AddInstance = function(player: Player, instanceData: { Name: string, Attribute: string })
+DataManager.AddMoney = function(player: Player, amount: number)
+	if not player then
+		return
+	end
+	local profile = Profile.Profiles[player]
+	if not profile then
+		return
+	end
+	if amount <= 0 then
+		return
+	end
+	profile.Data.Money += amount -- Obviously update the UI throught a remote or a signal.
+end
+
+DataManager.RemoveMoney = function(player: Player, amount)
+	if not player then
+		return
+	end
+	if amount <= 0 then
+		return
+	end
 	local profile = Profile.Profiles[player]
 	if not profile then
 		return
 	end
 
-	local attribute = instanceData.Attribute
-	local name = instanceData.Name
-	if not attribute or not name then
-		return
+	if profile.Data.Money >= amount then
+		profile.Data.Money -= amount
+		print("Money substracted successfuly")
+	else
+		warn("Not enough money ")
 	end
-
-	local category = profile.Data.Unlocked[attribute]
-	if not category then
-		return
-	end
-
-	category[name] = true
 end
+
 
 
 return DataManager

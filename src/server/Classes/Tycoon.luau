@@ -27,6 +27,9 @@ function Tycoon.new(player: Player): TycoonObject
 	return self
 end
 
+
+
+
 function Tycoon:Destroy()
 	self.Owner = nil
 	self.Money = nil
