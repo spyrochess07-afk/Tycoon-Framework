@@ -1,15 +1,16 @@
+
 local Players = game:GetService("Players")
+
+-- Dependencies and types
 local ProfileStore = require(game.ServerScriptService.ServerPackages.ProfileStore)
-local Types=require(game:GetService("ReplicatedStorage").Shared.Types)
+local Types=require(script.Parent.Parent.Utility.Types)
+type ProfileTemplate=Types.ProfileTemplate
 
-type Template=Types.Template
 
-local TEMPLATE: Template = {
+
+local TEMPLATE: ProfileTemplate = {
 	Money = 0,
-	Unlocked = {
-		["Generators"] = {["First"]=true}  ,
-		["Buttons"] = {["Hi"]=true},
-	},
+	Rebirths=0,
 }
 
 
