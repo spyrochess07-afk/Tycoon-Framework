@@ -88,6 +88,12 @@ function Plot:Init() -- When the player joins a server it loads each part of his
 	end
 end
 
+
+
+
+
+
+
 function Plot:AddAsset(asset)
 	local categoryName = asset.Attribute
 	local category = PlotAssets:FindFirstChild(categoryName)
@@ -99,7 +105,7 @@ function Plot:AddAsset(asset)
 
 	local item = category:FindFirstChild(asset.Name)
 	local clonedItem = item:Clone()
-	-- Once again add parent logic right here ideally self.Plot -- parent smt like that
+	-- Once again add parent logic right here ideally -- parent smt like that
 
 	self.__janitor:Add(clonedItem, "Destroy")
 end
